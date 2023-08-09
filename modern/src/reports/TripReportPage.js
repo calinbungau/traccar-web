@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  IconButton, Table, TableBody, TableCell, TableHead, TableRow,
+  IconButton, Table, TableBody, TableCell, TableHead, TableRow, TableFooter
 } from '@mui/material';
 import GpsFixedIcon from '@mui/icons-material/GpsFixed';
 import LocationSearchingIcon from '@mui/icons-material/LocationSearching';
@@ -128,7 +128,17 @@ const TripReportPage = () => {
       navigate('/reports/scheduled');
     }
   });
-
+  const formatSummary = (key) => {
+    switch (key) {
+      case 'distance':
+        var sumDistance = 0;
+        console.log(items);
+        items.forEach((el)=>{
+          sumDistance = sumDistance + el.distance;
+        });
+        return formatDistance(sumDistance, distanceUnit, t);;
+    }
+  }
   const formatValue = (item, key) => {
     switch (key) {
       case 'startTime':
@@ -177,7 +187,7 @@ const TripReportPage = () => {
               <ColumnSelect columns={columns} setColumns={setColumns} columnsArray={columnsArray} />
             </ReportFilter>
           </div>
-          <Table>
+          <Table size="small">
             <TableHead>
               <TableRow>
                 <TableCell className={classes.columnAction} />
@@ -206,6 +216,16 @@ const TripReportPage = () => {
                 </TableRow>
               )) : (<TableShimmer columns={columns.length + 1} startAction />)}
             </TableBody>
+            <TableFooter>
+              <TableRow>
+                <TableCell><b>Total:</b></TableCell>
+                {columns.map((key) => (
+                  <TableCell key={key}>
+                   <b>{formatSummary(key)}</b> 
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableFooter>
           </Table>
         </div>
       </div>
